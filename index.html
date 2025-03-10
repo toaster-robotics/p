@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        #countdown {
+            font-size: 10vw;
+            font-weight: bold;
+            width: 90%;
+        }
+        #final-date {
+            font-size: 2vw;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown">Loading...</div>
+    <div id="final-date">Final Date: June 5, 2025 (Bangkok Time)</div>
+
+    <script>
+        const targetDate = new Date("2025-06-05T00:00:00+07:00").getTime(); // Bangkok Time
+
+        function updateCountdown(currentTime) {
+            const timeRemaining = targetDate - currentTime;
+
+            if (timeRemaining < 0) {
+                document.getElementById("countdown").innerHTML = "Event Started!";
+                return;
+            }
+
+            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        function fetchInternetTime() {
+            fetch("https://worldtimeapi.org/api/timezone/Etc/UTC")
+                .then(response => response.json())
+                .then(data => {
+                    let utcTime = new Date(data.utc_datetime).getTime();
+                    
+                    // Start countdown and update every second
+                    setInterval(() => {
+                        updateCountdown(utcTime);
+                        utcTime += 1000; // Increment local time to match real-time ticking
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error("Error fetching internet time:", error);
+                    document.getElementById("countdown").innerHTML = "Error fetching time!";
+                });
+        }
+
+        fetchInternetTime();
+    </script>
+</body>
+</html>
