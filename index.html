@@ -52,7 +52,7 @@
         }
 
         function fetchInternetTime() {
-            fetch("https://worldtimeapi.org/api/timezone/Etc/UTC")
+            fetch("https://worldtimeapi.io/api/ip") // Alternative API
                 .then(response => response.json())
                 .then(data => {
                     let utcTime = new Date(data.utc_datetime).getTime();
